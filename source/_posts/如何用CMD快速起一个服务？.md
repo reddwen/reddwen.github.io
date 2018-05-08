@@ -13,6 +13,7 @@ tags: node javascript http-server
 ``` bash
 $ npm install http-server 
 ```
+<!-- more -->
 
 
 # windows 使用方法

@@ -20,6 +20,8 @@ jsonp是一种跨域通信的手段，它的原理其实很简单：
 >echo $callback.'(.json_encode($data).)'; 
 >```
 
+<!-- more -->
+
 * 客户端接收到返回的js脚本，开始解析和执行fn(response)
 
 # 3. jsonp简单实现

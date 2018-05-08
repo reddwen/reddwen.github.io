@@ -7,12 +7,12 @@ title: 文豪要加油
 subtitle:
 description: 不念过往，不惧将来！
 author: Reddwen
-language:
+language: zh-CN
 timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
+url: http://reddwen.github.io/
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
