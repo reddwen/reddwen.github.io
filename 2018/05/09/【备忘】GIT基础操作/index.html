@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="GIT 基本操作本文针对初级用户，从最简单的讲起，但是需要读者对Git的基本用法有所了解。同时，本文覆盖了下面5个命令的几乎所有的常用用法，所以对于熟练用户也有参考价值。  git clone git remote git fetch git pull git push">
+<meta name="keywords" content="GIT GIT基本操作 备忘">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GIT基础操作">
+<meta property="og:url" content="http://reddwen.github.io/2018/05/09/【备忘】GIT基础操作/index.html">
+<meta property="og:site_name" content="文豪要加油">
+<meta property="og:description" content="GIT 基本操作本文针对初级用户，从最简单的讲起，但是需要读者对Git的基本用法有所了解。同时，本文覆盖了下面5个命令的几乎所有的常用用法，所以对于熟练用户也有参考价值。  git clone git remote git fetch git pull git push">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-05-09T01:39:17.727Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GIT基础操作">
+<meta name="twitter:description" content="GIT 基本操作本文针对初级用户，从最简单的讲起，但是需要读者对Git的基本用法有所了解。同时，本文覆盖了下面5个命令的几乎所有的常用用法，所以对于熟练用户也有参考价值。  git clone git remote git fetch git pull git push">
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="文豪要加油" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="http://reddwen.github.io/2018/05/09/【备忘】GIT基础操作/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>GIT基础操作 | 文豪要加油</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">文豪要加油</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://reddwen.github.io/2018/05/09/【备忘】GIT基础操作/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Reddwen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="文豪要加油">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GIT基础操作
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-05-09 08:51:25 / 修改时间：09:39:17" itemprop="dateCreated datePublished" datetime="2018-05-09T08:51:25+08:00">2018-05-09</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="GIT-基本操作"><a href="#GIT-基本操作" class="headerlink" title="GIT 基本操作"></a>GIT 基本操作</h1><p>本文针对初级用户，从最简单的讲起，但是需要读者对Git的基本用法有所了解。同时，本文覆盖了下面5个命令的几乎所有的常用用法，所以对于熟练用户也有参考价值。</p>
+<ul>
+<li>git clone</li>
+<li>git remote</li>
+<li>git fetch</li>
+<li>git pull</li>
+<li>git push</li>
+</ul>
+<a id="more"></a>
+<h2 id="一、git-clone"><a href="#一、git-clone" class="headerlink" title="一、git clone"></a>一、git clone</h2><p>远程操作的第一步，通常是从远程主机克隆一个版本库，这时就要用到git clone命令。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git clone &lt;版本库的网址&gt;</span><br><span class="line">```  </span><br><span class="line">该命令会在本地主机生成一个目录，与远程主机的版本库同名。如果要指定不同的目录名，可以将目录名作为git clone命令的第二个参数。</span><br></pre></td></tr></table></figure></p>
+<p>$ git clone &lt;版本库的网址&gt; &lt;本地目录名&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone支持多种协议，除了HTTP(s)以外，还支持SSH、Git、本地文件协议等。常用的有如下一些：</span><br></pre></td></tr></table></figure></p>
+<p>$ git clone http[s]://example.com/path/to/repo.git/<br>$ git clone ssh://example.com/path/to/repo.git/<br>$ git clone git://example.com/path/to/repo.git/<br>$ git clone file:///opt/git/project.git<br>$ git clone ftp[s]://example.com/path/to/repo.git/<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 二、git remote</span><br><span class="line">为了便于管理，Git要求每个远程主机都必须指定一个主机名。  </span><br><span class="line">git remote 命令就用于管理主机名。</span><br><span class="line"></span><br><span class="line">* 不带选项的时候，git remote命令列出所有远程主机。</span><br></pre></td></tr></table></figure></p>
+<p>$ git remote<br>origin<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">* 使用 -v 选项，可以查看远程主机的网址。</span><br></pre></td></tr></table></figure></p>
+<p>$ git remote -v<br>origin  <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:example/example.git (fetch)<br>origin  <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:example/example.git (push)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">面命令表示，当前只有一台远程主机，叫做origin，以及它的网址。</span><br><span class="line"></span><br><span class="line">克隆版本库的时候，所使用的远程主机自动被Git命名为origin。  </span><br><span class="line">如果想用其他的主机名，需要用git clone命令的-o选项指定。</span><br></pre></td></tr></table></figure></p>
+<p>$ git clone -o example <a href="https://github.com/example/example.git" target="_blank" rel="noopener">https://github.com/example/example.git</a><br>$ git remote<br>example<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">上面命令表示，克隆的时候，指定远程主机叫做 example 。</span><br><span class="line"></span><br><span class="line">* git remote show命令加上主机名，可以查看该主机的详细信息</span><br></pre></td></tr></table></figure></p>
+<p>$ git remote show &lt;主机名&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">* git remote add命令用于添加远程主机。</span><br></pre></td></tr></table></figure></p>
+<p>$ git remote add &lt;主机名&gt; &lt;网址&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">* git remote rm命令用于删除远程主机</span><br></pre></td></tr></table></figure></p>
+<p>$ git remote rm &lt;主机名&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">## 三、git fetch</span><br><span class="line">一旦远程主机的版本库有了更新（Git术语叫做commit），需要将这些更新取回本地，这时就要用到git fetch命令。</span><br></pre></td></tr></table></figure></p>
+<p>$ git fetch &lt;远程主机名&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 默认情况下，git fetch取回所有分支（branch）的更新。如果只想取回特定分支的更新，可以指定分支名。</span><br></pre></td></tr></table></figure></p>
+<p>$ git fetch &lt;远程主机名&gt; &lt;分支名&gt;</p>
+<p>//比如，取回origin主机的master分支<br>$ git fetch origin master<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">* git branch命令的-r选项，可以用来查看远程分支，-a选项查看所有分支。</span><br></pre></td></tr></table></figure></p>
+<p>$ git branch -r<br>origin/master</p>
+<p>$ git branch -a</p>
+<ul>
+<li>master<br>remotes/origin/master<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">上面命令表示，本地主机的当前分支是master，远程分支是origin/master。</span><br><span class="line"></span><br><span class="line">* 取回远程主机的更新以后，可以在它的基础上，使用git checkout命令创建一个新的分支。</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>$ git checkout -b newBrach origin/master<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">* 此外，也可以使用git merge命令或者git rebase命令，在本地分支上合并远程分支。</span><br></pre></td></tr></table></figure></p>
+<p>$ git merge origin/master</p>
+<h1 id="或者"><a href="#或者" class="headerlink" title="或者"></a>或者</h1><p>$ git rebase origin/master<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">上面命令表示在当前分支上，合并origin/master。</span><br><span class="line"></span><br><span class="line">## 四、git pull</span><br><span class="line">git pull命令的作用是，取回远程主机某个分支的更新，再与本地的指定分支合并。它的完整格式稍稍有点复杂。</span><br></pre></td></tr></table></figure></p>
+<p>$ git pull &lt;远程主机名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">比如，取回origin主机的next分支，与本地的master分支合并，需要写成下面这样。</span><br></pre></td></tr></table></figure></p>
+<p>$ git pull origin next:master<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">如果远程分支是与当前分支合并，则冒号后面的部分可以省略。</span><br></pre></td></tr></table></figure></p>
+<p>$ git pull origin next<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">上面命令表示，取回origin/next分支，再与当前分支合并。实质上，这等同于先做git fetch，再做git merge。</span><br></pre></td></tr></table></figure></p>
+<p>$ git fetch origin<br>$ git merge origin/next<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">如果远程主机删除了某个分支，默认情况下，git pull 不会在拉取远程分支的时候，删除对应的本地分支。这是为了防止，由于其他人操作了远程主机，导致git pull不知不觉删除了本地分支。</span><br><span class="line"></span><br><span class="line">但是，你可以改变这个行为，加上参数 -p 就会在本地删除远程已经删除的分支。</span><br></pre></td></tr></table></figure></p>
+<p>$ git pull -p</p>
+<p>// 等同于下面的命令<br>$ git fetch –prune origin<br>$ git fetch -p</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">## 五、git push</span><br><span class="line">git push命令用于将本地分支的更新，推送到远程主机。它的格式与git pull命令相仿。</span><br></pre></td></tr></table></figure>
+<p>$ git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">注意，分支推送顺序的写法是&lt;来源地&gt;:&lt;目的地&gt;。</span><br><span class="line"></span><br><span class="line">**git pull** 是 &lt;远程分支&gt;:&lt;本地分支&gt;  </span><br><span class="line">**git push**是 &lt;本地分支&gt;:&lt;远程分支&gt;</span><br><span class="line"></span><br><span class="line">* 如果省略远程分支名，则表示将本地分支推送与之存在&quot;追踪关系&quot;的远程分支（通常两者同名），如果该远程分支不存在，则会被新建。</span><br></pre></td></tr></table></figure></p>
+<p>$ git push origin hexo<br>//上面命令表示，将本地的hexo分支推送到origin主机的hexo分支。如果后者不存在，则会被新建。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支</span><br></pre></td></tr></table></figure></p>
+<p>$ git push origin :master<br>// 等同于<br>$ git push origin –delete master</p>
+<p>//上面命令表示删除origin主机的master分支。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">* 如果当前分支与远程分支之间存在追踪关系，则本地分支和远程分支都可以省略。</span><br></pre></td></tr></table></figure></p>
+<p>$ git push origin<br>//上面命令表示，将当前分支推送到origin主机的对应分支。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">* 如果远程主机的版本比本地版本更新，推送时Git会报错，要求先在本地做git pull合并差异，然后再推送到远程主机。这时，如果你一定要推送，可以使用--force选项</span><br></pre></td></tr></table></figure></p>
+<p>$ git push –force origin </p>
+<p>//上面命令使用–force选项，结果导致远程主机上更新的版本被覆盖。除非你很确定要这样做，否则应该尽量避免使用–force选项<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">* git push不会推送标签（tag），除非使用--tags选项</span><br></pre></td></tr></table></figure></p>
+<p>$ git push origin –tags<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">## 六、git branch</span><br></pre></td></tr></table></figure></p>
+<p>$ git branch //不带参数：列出本地已经存在的分支，并且在当前分支的前面加“*”号标记</p>
+<p>$ git branch -r //列出远程分支</p>
+<p>$ git branch -a //列出本地分支和远程分支</p>
+<p>$ git branch newbranch(newname)    //创建一个新的本地分支，需要注意，此处只是创建分支，不进行分支切换</p>
+<p>$ git branch -m | -M oldbranch newbranch //重命名分支，如果newbranch名字分支已经存在，则需要使用-M强制重命名，否则，使用-m进行重命名</p>
+<p>$ git branch -d | -D branchname //删除branchname分支</p>
+<p>$ git branch -d -r branchname //删除远程branchname分支<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 七、git tag</span><br></pre></td></tr></table></figure></p>
+<p>$ git tag //不带参数：列出本地已经存在的tag，并且在当前tag的前面加“*”号标记</p>
+<p>$ git show tag //列出tag 的详细信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 八、git checkout</span><br></pre></td></tr></table></figure>
+<p>$ git checkout master //进入master分支</p>
+<p>$ git checkout -b fromb1 //为源创建分支fromb1，并切换到fromb1</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">## 九、git diff</span><br></pre></td></tr></table></figure>
+<p>$ git diff //可以产看当前没有add 的内容修改</p>
+<p>$ git diff –cached //查看已经add 没有commit 的改动</p>
+<p>$ git diff master origin/master //比较两个分支或看看本地分支和远程分支的差异</p>
+<p>$ git log test.txt //查看某个文件的日志<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">查看当前git仓库的状态用</span><br></pre></td></tr></table></figure></p>
+<p>$ git status<br><code>`</code></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/GIT-GIT基本操作-备忘/" rel="tag"># GIT GIT基本操作 备忘</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/08/关于GIT使用SSH/" rel="next" title="关于GIT使用SSH">
+                <i class="fa fa-chevron-left"></i> 关于GIT使用SSH
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Reddwen</p>
+              <p class="site-description motion-element" itemprop="description">不念过往，不惧将来！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GIT-基本操作"><span class="nav-number">1.</span> <span class="nav-text">GIT 基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、git-clone"><span class="nav-number">1.1.</span> <span class="nav-text">一、git clone</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#或者"><span class="nav-number">2.</span> <span class="nav-text">或者</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Reddwen</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
