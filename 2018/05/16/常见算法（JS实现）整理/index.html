@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="排序和搜索算法排序算法常用的排序算法有很多，如  冒泡排序  选择排序 插入排序 归并排序 快速排序 堆排序  下面我们就针对这几个排序算法来看看，了解一下思想 冒泡排序12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849function ArrayList()&amp;#123;">
+<meta name="keywords" content="javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常见算法（JS实现）整理">
+<meta property="og:url" content="http://reddwen.github.io/2018/05/16/常见算法（JS实现）整理/index.html">
+<meta property="og:site_name" content="文豪要加油">
+<meta property="og:description" content="排序和搜索算法排序算法常用的排序算法有很多，如  冒泡排序  选择排序 插入排序 归并排序 快速排序 堆排序  下面我们就针对这几个排序算法来看看，了解一下思想 冒泡排序12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849function ArrayList()&amp;#123;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-05-17T02:07:09.255Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="常见算法（JS实现）整理">
+<meta name="twitter:description" content="排序和搜索算法排序算法常用的排序算法有很多，如  冒泡排序  选择排序 插入排序 归并排序 快速排序 堆排序  下面我们就针对这几个排序算法来看看，了解一下思想 冒泡排序12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849function ArrayList()&amp;#123;">
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="文豪要加油" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="http://reddwen.github.io/2018/05/16/常见算法（JS实现）整理/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>常见算法（JS实现）整理 | 文豪要加油</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">文豪要加油</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://reddwen.github.io/2018/05/16/常见算法（JS实现）整理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Reddwen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="文豪要加油">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">常见算法（JS实现）整理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-05-16 21:12:44" itemprop="dateCreated datePublished" datetime="2018-05-16T21:12:44+08:00">2018-05-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-05-17 10:07:09" itemprop="dateModified" datetime="2018-05-17T10:07:09+08:00">2018-05-17</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="排序和搜索算法"><a href="#排序和搜索算法" class="headerlink" title="排序和搜索算法"></a>排序和搜索算法</h1><h2 id="排序算法"><a href="#排序算法" class="headerlink" title="排序算法"></a>排序算法</h2><p>常用的排序算法有很多，如</p>
+<ul>
+<li>冒泡排序 </li>
+<li>选择排序</li>
+<li>插入排序</li>
+<li>归并排序</li>
+<li>快速排序</li>
+<li>堆排序</li>
+</ul>
+<p>下面我们就针对这几个排序算法来看看，了解一下思想</p>
+<h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">function ArrayList()&#123;</span><br><span class="line">    let arr = [];</span><br><span class="line"></span><br><span class="line">    // 将数据插入到数组中</span><br><span class="line">    this.insert = function(item)&#123;</span><br><span class="line">        arr.push(item);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //展示数组结构用</span><br><span class="line">    this.show = function()&#123;</span><br><span class="line">        return arr.join(&apos; &lt; &apos;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 冒泡排序</span><br><span class="line">    this.bubbleSort = function()&#123;</span><br><span class="line">        let len = arr.length;</span><br><span class="line">        for( let i = 0 ; i &lt; len ; i++ )&#123;</span><br><span class="line">            // 这里之所以再－i，是因为外层循环已经跑完一轮</span><br><span class="line">            // 内循环就没有必要再比较一回了</span><br><span class="line">            for (let j = 0; j &lt; len - 1 - i; j++) &#123;  </span><br><span class="line">                if (arr[j] &gt; arr[j + 1]) &#123;  </span><br><span class="line">                    // 当前项和下一项做比较，如果大于的话就按照下面交换位置</span><br><span class="line">                    // ES6利用解构赋值的方式轻松实现j和j+1值的交换</span><br><span class="line">                    [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//测试一下</span><br><span class="line"></span><br><span class="line">let arr = [5, 4, 3, 2, 1];</span><br><span class="line"></span><br><span class="line">let createList = function(arr) &#123;</span><br><span class="line">    let list = new ArrayList();</span><br><span class="line">    for (let i = 0; i &lt; arr.length; i++) &#123;</span><br><span class="line">        list.insert(arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    return list;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">let item = createList(arr);</span><br><span class="line"></span><br><span class="line">console.log(item.string()); // 排序前 5 &lt; 4 &lt; 3 &lt; 2 &lt; 1</span><br><span class="line"></span><br><span class="line">item.bubbleSort();</span><br><span class="line"></span><br><span class="line">console.log(item.string()); // 排序后 1 &lt; 2 &lt; 3 &lt; 4 &lt; 5</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>从实现方式来看<strong>冒泡排序</strong>是最简单的一种，而且从运行时间的角度来看，冒泡排序是最差的一个，因为做了两层循环导致，复杂度为<strong>O(n^2)</strong></p>
+</blockquote>
+<h3 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h3><p>所谓选择排序算法，其实就是拿数组中的一个值做标杆，和其他的值做比较，如果比标杆还小的就替换标杆的值，以此类推就可以了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">function ArrayList()&#123;</span><br><span class="line">    // 前面省略，同上文中代码块...</span><br><span class="line"></span><br><span class="line">    //选择排序</span><br><span class="line">    this.selectSort = function()&#123;</span><br><span class="line">        let len = arr.length,</span><br><span class="line">            min = &apos;&apos;;</span><br><span class="line">        for( let i = 0 ; i &lt; len - 1 ; i++ )&#123;</span><br><span class="line">            // 取第一个数作为标杆</span><br><span class="line">            min = i ;</span><br><span class="line"></span><br><span class="line">            // 内部循环从i开始到数组结束</span><br><span class="line">            for (let j = i; j &lt; len; j++) &#123; </span><br><span class="line"></span><br><span class="line">                // 比标杆的值还小，就替换新值</span><br><span class="line">                if (arr[min] &gt; arr[j]) &#123;    </span><br><span class="line">                    min = j;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            // 上面经过一顿比较替换，如果标杆的值和之前取的第一个值不同了，就交换位置</span><br><span class="line">            if (i !== min) &#123;    </span><br><span class="line">                [arr[i], arr[min]] = [arr[min], arr[i]];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p><strong>选择排序</strong>我们看到其实也是嵌套了两层循环的操作，这样的话，其实复杂度和冒泡排序是一样的，为<strong>O(n^2)</strong></p>
+</blockquote>
+<h3 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h3><p>插入排序算法是假定数组的第一项已经是排好序的了，直接用它和第二项去比较，如果比第二项大就将索引和值都进行交换，以此来推来实现排序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">function ArrayList() &#123;</span><br><span class="line">    // 省略...</span><br><span class="line">    // 插入排序</span><br><span class="line">    this.insertSort = function()&#123;</span><br><span class="line">        let len = arr.length,</span><br><span class="line">            index,temp;</span><br><span class="line"></span><br><span class="line">        // 这里默认第一项已经排序了，直接从第二项开始</span><br><span class="line">        for (let i = 1; i &lt; len; i++) &#123;</span><br><span class="line">            // 用来记录一个索引</span><br><span class="line">            index = i ;</span><br><span class="line"></span><br><span class="line">            // 储存一个临时变量，方便之后插入位置</span><br><span class="line">            temp = arr[i];</span><br><span class="line"></span><br><span class="line">            // 索引必须是大于0，并且数组前一项的值如果大于临时变量的值</span><br><span class="line">            // 就将前一项的值赋给当期项，并且index--</span><br><span class="line">            while(index &gt; 0 &amp;&amp; arr[ index - 1] &gt; temp)&#123;</span><br><span class="line">                arr[index] = arr[index -1];</span><br><span class="line">                index--;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            // 最后在一顿替换后插入到了正确的位置上</span><br><span class="line">            arr[index] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 测试用例写在冒泡排序那里</span><br><span class="line">    let arr = [3, 5, 1, 4, 2];</span><br><span class="line">    // 按照这个数组，先来分析前两项，剩下的大家自己来推到即可了</span><br><span class="line">/*</span><br><span class="line">    Tips: -&gt; 符号为最后对应的值</span><br><span class="line">    进入for循环i从1开始那此时</span><br><span class="line">        index = i -&gt; 1;  next -&gt; 2</span><br><span class="line">        tmp = arr[1] -&gt; 5;  next -&gt; arr[2] -&gt; 1</span><br><span class="line">        while循环条件   1 &gt; 0 &amp;&amp; (arr[1-1]-&gt; arr[0] -&gt; 2) &gt; 5</span><br><span class="line">                                    不成立继续循环</span><br><span class="line">                                    next  2&gt;0 &amp;&amp; 5 &gt; 1</span><br><span class="line">                                    next  1&gt;0 &amp;&amp; 3 &gt; 1</span><br><span class="line">            arr[2] = arr[1] -&gt; 5</span><br><span class="line">            arr[1] = arr[0] -&gt; 3</span><br><span class="line">            index--;  index -&gt; 1  index -&gt; 0</span><br><span class="line">        最后</span><br><span class="line">        arr[index] = tmp -&gt; arr[1] = 5;   next  arr[1] = 1  arr[0] = 1</span><br><span class="line">        </span><br><span class="line">        就实现了值的交换</span><br><span class="line">        次时arr为[1, 3, 5, 4, 2]</span><br><span class="line">        剩下的以此类推即可了</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+<p>插入排序显然已经比冒泡和选择排序算法在性能上好很多了，不过有一点小遗憾啊，就是排序的数组不要太大，太大了它就受不鸟啦！</p>
+<h3 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h3><p>这一个算法有点儿难度，我在写这篇文章时，发现我读过的一个作者写的是错的，我模拟了步骤，怎么也进行不下去，所以仔细查了资料，找到了下面这种算法实现，大家不需要死记，理解原理是最重要的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">function ArrayList()&#123;</span><br><span class="line">    //省略</span><br><span class="line"></span><br><span class="line">    function mergeSort(arr)&#123;</span><br><span class="line">        // 设置终止的条件，</span><br><span class="line">        if (arr.length &lt; 2) &#123;</span><br><span class="line">            return arr;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //设立中间值</span><br><span class="line">        var middle = parseInt(arr.length / 2);</span><br><span class="line"></span><br><span class="line">        //第1个和middle个之间为左子列</span><br><span class="line">        var left = arr.slice(0, middle);</span><br><span class="line"></span><br><span class="line">        //第middle+1到最后为右子列</span><br><span class="line">        var right = arr.slice(middle);</span><br><span class="line"></span><br><span class="line">        if(left==&quot;undefined&quot;&amp;&amp;right==&quot;undefined&quot;)&#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        return merge(mergeSort(left), mergeSort(right));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function merge(left, right)&#123;</span><br><span class="line">        var result = [];</span><br><span class="line"></span><br><span class="line">        while (left.length &amp;&amp; right.length) &#123;</span><br><span class="line">            if(left[0] &lt;= right[0])&#123;</span><br><span class="line">                //把left的左子树推出一个，然后push进result数组里</span><br><span class="line">                result.push(left.shift());</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                //把right的右子树推出一个，然后push进result数组里</span><br><span class="line">                result.push(right.shift());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        //经过上面一次循环，只能左子列或右子列一个不为空，或者都为空</span><br><span class="line">        while (left.length)&#123;</span><br><span class="line">            result.push(left.shift());</span><br><span class="line">        &#125; </span><br><span class="line">        while (right.length)&#123;</span><br><span class="line">            result.push(right.shift());</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>归并排序采用的是一种分治算法，就是将一个大问题拆成小问题来解决，等每个小问题都解决了，大问题也就搞定了。</p>
+<p>实现思想：将原数组切分成小数组，直到每个数组只有一项，然后再将小数组合并成大数组，最后得到一个排好序的大数组。</p>
+<h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><p>它是一种分而治之思想在排序算法上的典型应用。本质上来看，快速排序应该算是在冒泡排序基础上的递归分治法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">function qSort (arr) &#123;</span><br><span class="line">	if (arr.length == 0) &#123;</span><br><span class="line">		return []</span><br><span class="line">	&#125;</span><br><span class="line">	var left = []</span><br><span class="line">	var right = []</span><br><span class="line">	var pivot = arr[0]</span><br><span class="line">	for (var i = 1; i &lt; arr.length; i++) &#123;</span><br><span class="line">		if (arr[i] &lt; pivot) &#123;</span><br><span class="line">			left.push(arr[i])</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			right.push(arr[i])</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return qSort(left).concat(pivot, qSort(right))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var arr=[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];</span><br><span class="line">console.log(qSort(arr));</span><br></pre></td></tr></table></figure>
+<p>快速排序的最坏运行情况是O(n²)，比如说顺序数列的快排。但它的平摊期望时间是O(n log n) ，且O(n log n)记号中隐含的常数因子很小，比复杂度稳定等于O(n log n)的归并排序要小很多。所以，对绝大多数顺序性较弱的随机数列而言，快速排序总是优于归并排序</p>
+<h3 id="二分法查找算法（查找位置）"><a href="#二分法查找算法（查找位置）" class="headerlink" title="二分法查找算法（查找位置）"></a>二分法查找算法（查找位置）</h3><p>这个算法是查找算法，不是排序了。<br>二分查找，又叫做折半查找</p>
+<ul>
+<li>首先，从有序数组的中间的元素开始搜索，如果该元素正好是目标元素（即要查找的元素），则搜索过程结束，否则进行下一步。</li>
+<li>如果目标元素大于或者小于中间元素，则在数组大于或小于中间元素的那一半区域查找，然后重复第一步的操作。</li>
+<li>如果某一步数组为空，则表示找不到目标元素。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function binSearch (arr, data) &#123;</span><br><span class="line">	var low = 0;</span><br><span class="line">	var high = arr.length - 1</span><br><span class="line">	while (low &lt;= high) &#123;</span><br><span class="line">		var middle = Math.floor((low + high) / 2)</span><br><span class="line">		if (arr[middle] &lt; data) &#123;</span><br><span class="line">			low = middle + 1</span><br><span class="line">		&#125; else if (arr[middle] &gt; data) &#123;</span><br><span class="line">			high = middle - 1</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			return middle</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return -1</span><br><span class="line">&#125;</span><br><span class="line">var arr=[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];</span><br><span class="line">console.log(binSearch(arr, 15))</span><br></pre></td></tr></table></figure>
+<h1 id="梳理一下"><a href="#梳理一下" class="headerlink" title="梳理一下"></a>梳理一下</h1><h2 id="排序算法-1"><a href="#排序算法-1" class="headerlink" title="排序算法"></a>排序算法</h2><p>冒泡排序 -&gt; 嵌套两层循环，和下面的选择排序一样性能不好<br>选择排序 -&gt; 楼上的没脑子<br>插入排序 -&gt; 相比楼上两位，它的性能会好很多，不过只适用于数据量少的数组<br>归并排序 -&gt; 很有来头，被认可的排序算法<br>快速排序 -&gt; 很常用的排序算法，性能也很好</p>
+<h2 id="搜索算法"><a href="#搜索算法" class="headerlink" title="搜索算法"></a>搜索算法</h2><p>二分查找法 -&gt; 猜猜猜，押大押小，小了就在小的一侧找，大了就去大的一侧找</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>算法很有用，提高工作效率，重构的时候也很有效果，算法也很费脑，很难吃下去，所以需要坚持，我也会继续学习，继续补全这篇文章。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/08/关于GIT使用SSH/" rel="next" title="关于GIT使用SSH">
+                <i class="fa fa-chevron-left"></i> 关于GIT使用SSH
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Reddwen</p>
+              <p class="site-description motion-element" itemprop="description">不念过往，不惧将来！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#排序和搜索算法"><span class="nav-number">1.</span> <span class="nav-text">排序和搜索算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#排序算法"><span class="nav-number">1.1.</span> <span class="nav-text">排序算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#冒泡排序"><span class="nav-number">1.1.1.</span> <span class="nav-text">冒泡排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选择排序"><span class="nav-number">1.1.2.</span> <span class="nav-text">选择排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插入排序"><span class="nav-number">1.1.3.</span> <span class="nav-text">插入排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#归并排序"><span class="nav-number">1.1.4.</span> <span class="nav-text">归并排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快速排序"><span class="nav-number">1.1.5.</span> <span class="nav-text">快速排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二分法查找算法（查找位置）"><span class="nav-number">1.1.6.</span> <span class="nav-text">二分法查找算法（查找位置）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#梳理一下"><span class="nav-number">2.</span> <span class="nav-text">梳理一下</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#排序算法-1"><span class="nav-number">2.1.</span> <span class="nav-text">排序算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索算法"><span class="nav-number">2.2.</span> <span class="nav-text">搜索算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">2.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Reddwen</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
