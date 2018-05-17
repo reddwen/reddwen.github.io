@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="之前看过了很多遍关于Promise 的相关知识，但是感觉不踏实，总觉得不得心应手。最近心血来潮，想回炉再造一遍。网上看了好多篇相关的文章，算是get到了一些点，下面是自己整理的一些不清楚或者有遗漏的地方。  promise.resolve()传递不同参数的含义？ 当一个promise依赖另一个promise时事件执行顺序? 当catch捕获到了错误后，会不会继续执行后面的then方法?如果你也觉得">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Promise理解，到位了">
+<meta property="og:url" content="http://reddwen.github.io/2018/05/10/关于Promise理解，到位了/index.html">
+<meta property="og:site_name" content="文豪要加油">
+<meta property="og:description" content="之前看过了很多遍关于Promise 的相关知识，但是感觉不踏实，总觉得不得心应手。最近心血来潮，想回炉再造一遍。网上看了好多篇相关的文章，算是get到了一些点，下面是自己整理的一些不清楚或者有遗漏的地方。  promise.resolve()传递不同参数的含义？ 当一个promise依赖另一个promise时事件执行顺序? 当catch捕获到了错误后，会不会继续执行后面的then方法?如果你也觉得">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-05-17T02:11:26.217Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于Promise理解，到位了">
+<meta name="twitter:description" content="之前看过了很多遍关于Promise 的相关知识，但是感觉不踏实，总觉得不得心应手。最近心血来潮，想回炉再造一遍。网上看了好多篇相关的文章，算是get到了一些点，下面是自己整理的一些不清楚或者有遗漏的地方。  promise.resolve()传递不同参数的含义？ 当一个promise依赖另一个promise时事件执行顺序? 当catch捕获到了错误后，会不会继续执行后面的then方法?如果你也觉得">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="文豪要加油" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="http://reddwen.github.io/2018/05/10/关于Promise理解，到位了/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>关于Promise理解，到位了 | 文豪要加油</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">文豪要加油</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://reddwen.github.io/2018/05/10/关于Promise理解，到位了/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Reddwen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="文豪要加油">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于Promise理解，到位了
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-05-10 14:15:51" itemprop="dateCreated datePublished" datetime="2018-05-10T14:15:51+08:00">2018-05-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-05-17 10:11:26" itemprop="dateModified" datetime="2018-05-17T10:11:26+08:00">2018-05-17</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前看过了很多遍关于Promise 的相关知识，但是感觉不踏实，总觉得不得心应手。<br>最近心血来潮，想回炉再造一遍。网上看了好多篇相关的文章，算是get到了一些点，下面是自己整理的一些不清楚或者有遗漏的地方。</p>
+<ul>
+<li>promise.resolve()传递不同参数的含义？</li>
+<li>当一个promise依赖另一个promise时事件执行顺序?</li>
+<li>当catch捕获到了错误后，会不会继续执行后面的then方法?<br>如果你也觉得这些问题，你比较迷茫，可以看看。<h1 id="1-promise语法"><a href="#1-promise语法" class="headerlink" title="1.promise语法"></a>1.promise语法</h1><strong>Promise编程的核心思想是如果数据就绪(promised)，那么(then)做点什么。</strong><br>Promise 实例如下：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const promise = new Promise(function(resolve, reject) &#123;</span><br><span class="line">  // ... some code</span><br><span class="line"></span><br><span class="line">  if (/* 异步操作成功 */)&#123;</span><br><span class="line">    resolve(value);</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    reject(error);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>Promise构造函数接受一个函数作为参数，该函数的两个参数分别是resolve(成功)和reject(失败)。  </p>
+<p><strong>resolve</strong>函数的作用是，将Promise对象的状态从“未完成”变为“成功”（ 即从 pending 变为 resolved ），在异步操作成功时调用，并将异步操作的结果，作为参数传递出去。  </p>
+<p><strong>reject</strong>函数的作用是，将Promise对象的状态从“未完成”变为“失败”（ 即从 pending 变为 rejected ）， 在异步操作失败时调用，并将异步操作报出的错误，作为参数传递出去。</p>
+<p>Promise实例生成以后，可以用then方法分别指定resolved状态和rejected状态的回调函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">promise.then(function(value) &#123;</span><br><span class="line">  // 成功后的回调</span><br><span class="line">&#125;, function(error) &#123;</span><br><span class="line">  // 失败后的回调</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>以上，第二个函数是可选的，不一定要提供。这两个函数都接受Promise对象传出的值作为参数。</p>
+<p>如果then方法返回的是一个新的Promise实例，那么就可以采用链式写法，即then方法后面再调用另一个then方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">getJSON(&quot;/posts.json&quot;).then(function(json) &#123;</span><br><span class="line">  return json.post;</span><br><span class="line">&#125;).then(function(post) &#123;</span><br><span class="line">  // 第二个promise请求的操作。</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>以上的代码，第一个回调函数完成以后，会将返回结果作为参数，传入第二个回调函数。</p>
+<p><strong>Promise.prototype.catch</strong>方法用于指定发生错误时的回调函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">getJSON(&apos;/posts.json&apos;).then(function(posts) &#123;</span><br><span class="line">  // ...</span><br><span class="line">&#125;).catch(function(error) &#123;</span><br><span class="line">  // 处理 getJSON 和 前一个回调函数运行时发生的错误</span><br><span class="line">  console.log(&apos;发生错误！&apos;, error);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>如果异步操作抛出错误，状态就会变为rejected，就会调用catch方法指定的回调函数，处理这个错误。另外，then方法指定的回调函数，如果运行中抛出错误，也会被catch方法捕获。</p>
+<p>建议Promise 对象后面要跟catch方法，这样可以处理 Promise 内部发生的错误。catch方法返回的还是一个 Promise 对象，因此后面还可以接着调用then方法。</p>
+<p><strong>注意</strong>  </p>
+<ol>
+<li>如果resolve函数和reject函数调用时带有参数，那么它们的参数会被传递给回调函数。resolve函数的参数除了正常的值以外，还可能是另一个 Promise 实例</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const p1 = new Promise(function (resolve, reject) &#123;</span><br><span class="line">  // ...</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">const p2 = new Promise(function (resolve, reject) &#123;</span><br><span class="line">  // ...</span><br><span class="line">  resolve(p1);</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">//上面代码中，p1和p2都是 Promise 的实例，但是p2的resolve方法将p1作为参数，即一个异步操作的结果是返回另一个异步操作。</span><br></pre></td></tr></table></figure>
+<p>这时p1的状态就会传递给p2。也就是说，p1的状态决定了p2的状态。如果p1的状态是pending，那么p2的回调函数就会等待p1的状态改变；如果p1的状态已经是resolved或者rejected，那么p2的回调函数将会立刻执行。</p>
+<ol start="2">
+<li><p>调用resolve或reject并不会终结 Promise 的参数函数的执行。</p>
+</li>
+<li><p>then方法是定义在原型对象Promise.prototype上的。</p>
+</li>
+<li><p>如果没有使用catch方法指定错误处理的回调函数，Promise 对象抛出的错误不会传递到外层代码，即不会有任何反应。</p>
+</li>
+<li><p>Promise 在resolve语句后面，再抛出错误，不会被捕获，等于没有抛出。因为 Promise的状态一旦改变，就永久保持该状态，不会再变了。</p>
+</li>
+</ol>
+<h1 id="2-Promise-resolve"><a href="#2-Promise-resolve" class="headerlink" title="2. Promise.resolve()"></a>2. Promise.resolve()</h1><p>有时需要将现有对象转为 Promise 对象，Promise.resolve方法就起到这个作用（了解一下）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Promise.resolve(&apos;foo&apos;)</span><br><span class="line">// 等价于</span><br><span class="line">new Promise(resolve =&gt; resolve(&apos;foo&apos;))</span><br></pre></td></tr></table></figure>
+<p>Promise.resolve方法的参数分成四种情况。</p>
+<p>1）参数是一个 Promise 实例</p>
+<p>如果参数是 Promise 实例，那么Promise.resolve将不做任何修改、原封不动地返回这个实例。</p>
+<p>2）参数是一个thenable对象</p>
+<p>thenable对象指的是具有then方法的对象，比如下面这个对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let thenable = &#123;</span><br><span class="line">  then: function(resolve, reject) &#123;</span><br><span class="line">    resolve(42);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>Promise.resolve方法会将这个对象转为 Promise 对象，然后就立即执行thenable对象的then方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">let thenable = &#123;</span><br><span class="line">  then: function(resolve, reject) &#123;</span><br><span class="line">    resolve(42);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">let p1 = Promise.resolve(thenable);</span><br><span class="line">p1.then(function(value) &#123;</span><br><span class="line">  console.log(value);  // 42</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">//上面代码中，thenable对象的then方法执行后，</span><br><span class="line">//对象p1的状态就变为resolved，从而立即执行最后那个then方法指定的回调函数，输出 42。</span><br></pre></td></tr></table></figure></p>
+<p>3）参数不是具有then方法的对象，或根本就不是对象  </p>
+<p>如果参数是一个原始值，或者是一个不具有then方法的对象，则Promise.resolve方法返回一个新的 Promise 对象，状态为resolved。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const p = Promise.resolve(&apos;Hello&apos;);</span><br><span class="line"></span><br><span class="line">p.then(function (s)&#123;</span><br><span class="line">  console.log(s)</span><br><span class="line">&#125;);</span><br><span class="line">// Hello</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//上面代码生成一个新的 Promise 对象的实例p。</span><br><span class="line">//由于字符串Hello不属于异步操作（判断方法是字符串对象不具有 then 方法），返回 Promise 实例的状态从一生成就是resolved，所以回调函数会立即执行。</span><br><span class="line">//Promise.resolve方法的参数，会同时传给回调函数。</span><br></pre></td></tr></table></figure>
+<p>4）不带有任何参数</p>
+<p>Promise.resolve方法允许调用时不带参数，直接返回一个resolved状态的 Promise 对象。</p>
+<p>所以，如果希望得到一个 Promise 对象，比较方便的方法就是直接调用Promise.resolve方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const p = Promise.resolve();</span><br><span class="line"></span><br><span class="line">p.then(function () &#123;</span><br><span class="line">  // ...</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p><strong>注意！立即resolve的 Promise 对象，是在本轮“事件循环”（event loop）的结束时，而不是在下一轮“事件循环”的开始时</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(function () &#123;</span><br><span class="line">  console.log(&apos;three&apos;);</span><br><span class="line">&#125;, 0);</span><br><span class="line"></span><br><span class="line">Promise.resolve().then(function () &#123;</span><br><span class="line">  console.log(&apos;two&apos;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">console.log(&apos;one&apos;);</span><br><span class="line"></span><br><span class="line">// one</span><br><span class="line">// two</span><br><span class="line">// three</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//上面代码中，setTimeout(fn, 0)在下一轮“事件循环”开始时执行。</span><br><span class="line"></span><br><span class="line">//Promise. resolve()在本轮“事件循环”结束时执行。</span><br><span class="line"></span><br><span class="line">//console.log(&apos;one&apos;)则是立即执行，因此最先输出。</span><br></pre></td></tr></table></figure>
+<h1 id="3-错误提醒"><a href="#3-错误提醒" class="headerlink" title="3.错误提醒"></a>3.错误提醒</h1><p>1）用了 promises 后怎么用 forEach?</p>
+<p>forEach()/for/while 并非你寻找的解决方案。你需要的是 Promise.all();<br>例子如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 我想删除所有的docs</span><br><span class="line"></span><br><span class="line">db.allDocs(&#123;include_docs: true&#125;).then(function (result) &#123;</span><br><span class="line">  return Promise.all(result.rows.map(function (row) &#123;</span><br><span class="line">    return db.remove(row.doc);</span><br><span class="line">  &#125;));</span><br><span class="line">&#125;).then(function (arrayOfResults) &#123;</span><br><span class="line">  // All docs have really been removed() now!</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>上面的代码是，大体来说，Promise.all()会以一个 promises 数组为输入，并且返回一个新的 promise。<br>这个新的 promise 会在数组中所有的 promises 都成功返回后才返回。他是异步版的 for 循环。</p>
+<p>并且 Promise.all() 会将执行结果组成的数组返回到下一个函数。<br>比如当你希望从 PouchDB 中获取多个对象时，会非常有用。<br>此外一个更加有用的特效是，一旦数组中的 promise 任意一个返回错误，Promise.all() 也会返回错误。</p>
+<p>2）忘记使用catch！<br>单纯的坚信自己的 promises 会永远不出现异常，很多开发者会忘记在他们的代码中添加一个 .catch()。<br>然而不幸的是这也意味着，任何被抛出的异常都会被吃掉，并且你无法在 console 中观察到他们。这类问题 debug 起来会非常痛苦。<br><strong>所以！把catch()加上！</strong></p>
+<p>3) 使用副作用调用而非返回</p>
+<p>下面的代码，经常被使用到，但是有什么问题呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">somePromise().then(function () &#123;</span><br><span class="line">  someOtherPromise();</span><br><span class="line">&#125;).then(function () &#123;</span><br><span class="line">  // 我希望someOtherPromise() 状态变成resolved!</span><br><span class="line">  // 但是并没有</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>每一个 promise 都会提供给你一个 then() 函数 (或是 catch()，实际上只是 then(null, …) 的语法糖)。当我们在 then() 函数内部时：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">somePromise().then(function () &#123;</span><br><span class="line">  // I am inside a then() function!</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>我们可以做什么呢？有三种事情：</p>
+<ul>
+<li>return 另一个 promise</li>
+<li>return 一个同步的值 (或者 undefined)</li>
+<li>throw 一个同步异常</li>
+</ul>
+<p>就是这样。一旦你理解了这个技巧，你就理解了 promises。因此让我们逐个了解下。</p>
+<ol>
+<li>返回另一个 promise。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">getUserByName(&apos;nolan&apos;).then(function (user) &#123;</span><br><span class="line">  return getUserAccountById(user.id);</span><br><span class="line">&#125;).then(function (userAccount) &#123;</span><br><span class="line">  // I got a user account!</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>注意：我是<code>return</code>第二个 promise，这个<code>return</code>非常重要。如果我没有写<code>return</code>，<code>getUserAccountById()</code>就会成为一个副作用，并且下一个函数将会接收到<code>undefined</code>而非<code>userAccount</code></p>
+<ol start="2">
+<li>返回一个同步值 (或者 undefined)</li>
+</ol>
+<p>返回 undefined 通常是错误的，但是返回一个同步值实际上是将同步代码包裹为 promise 风格代码的一种非常赞的手段。<br>举例来说，我们对 users 信息有一个内存缓存。我们可以这样做：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">getUserByName(&apos;nolan&apos;).then(function (user) &#123;</span><br><span class="line">  if (inMemoryCache[user.id]) &#123;</span><br><span class="line">    return inMemoryCache[user.id];    // returning a synchronous value!</span><br><span class="line">  &#125;</span><br><span class="line">  return getUserAccountById(user.id); // returning a promise!</span><br><span class="line">&#125;).then(function (userAccount) &#123;</span><br><span class="line">  // I got a user account!</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>第二个函数不需要关心 userAccount 是从同步方法还是异步方法中获取的，并且第一个函数可以非常自由的返回一个同步或者异步值。</p>
+<ol start="3">
+<li>抛出同步异常</li>
+</ol>
+<p>比如我们希望在用户已经登出时，抛出一个同步异常。这会非常简单。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">getUserByName(&apos;nolan&apos;).then(function (user) &#123;</span><br><span class="line">  if (user.isLoggedOut()) &#123;</span><br><span class="line">    throw new Error(&apos;user logged out!&apos;); // throwing a synchronous error!</span><br><span class="line">  &#125;</span><br><span class="line">  if (inMemoryCache[user.id]) &#123;</span><br><span class="line">    return inMemoryCache[user.id];       // returning a synchronous value!</span><br><span class="line">  &#125;</span><br><span class="line">  return getUserAccountById(user.id);    // returning a promise!</span><br><span class="line">&#125;).then(function (userAccount) &#123;</span><br><span class="line">  // I got a user account!</span><br><span class="line">&#125;).catch(function (err) &#123;</span><br><span class="line">  // Boo, I got an error!</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>如果用户已经登出，我们的 catch() 会接收到一个同步异常，并且如果 后续的 promise 中出现异步异常，他也会接收到。<br>再强调一次，这个函数并不需要关心这个异常是同步还是异步返回的。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/09/GIT基础操作/" rel="next" title="GIT基础操作">
+                <i class="fa fa-chevron-left"></i> GIT基础操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/14/一道有意思的promise题/" rel="prev" title="一道有意思的promise题">
+                一道有意思的promise题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Reddwen</p>
+              <p class="site-description motion-element" itemprop="description">不念过往，不惧将来！</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-promise语法"><span class="nav-number">1.</span> <span class="nav-text">1.promise语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Promise-resolve"><span class="nav-number">2.</span> <span class="nav-text">2. Promise.resolve()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-错误提醒"><span class="nav-number">3.</span> <span class="nav-text">3.错误提醒</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Reddwen</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
