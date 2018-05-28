@@ -17,7 +17,7 @@ tags: javascript
 下面我们就针对这几个排序算法来看看，了解一下思想
 
 ### 冒泡排序
-```
+```javascript
 function ArrayList(){
     let arr = [];
 
@@ -73,7 +73,7 @@ console.log(item.string()); // 排序后 1 < 2 < 3 < 4 < 5
 ### 选择排序
 
 所谓选择排序算法，其实就是拿数组中的一个值做标杆，和其他的值做比较，如果比标杆还小的就替换标杆的值，以此类推就可以了。
-```
+```javascript
 function ArrayList(){
     // 前面省略，同上文中代码块...
 
@@ -109,7 +109,7 @@ function ArrayList(){
 
 插入排序算法是假定数组的第一项已经是排好序的了，直接用它和第二项去比较，如果比第二项大就将索引和值都进行交换，以此来推来实现排序
 
-```
+```javascript
 function ArrayList() {
     // 省略...
     // 插入排序
@@ -166,7 +166,7 @@ function ArrayList() {
 
 这一个算法有点儿难度，我在写这篇文章时，发现我读过的一个作者写的是错的，我模拟了步骤，怎么也进行不下去，所以仔细查了资料，找到了下面这种算法实现，大家不需要死记，理解原理是最重要的。
 
-```
+```javascript
 function ArrayList(){
     //省略
 
@@ -221,31 +221,80 @@ function ArrayList(){
 
 ### 快速排序
 
-它是一种分而治之思想在排序算法上的典型应用。本质上来看，快速排序应该算是在冒泡排序基础上的递归分治法。
+我们要实现一个标准快排，首先要规避上面提到的问题：
 
+取中间值要用下角标，切勿用splice。
+要用原地数组交换，切勿用临时数组。
+
+我们期望实现的函数是这样的：
+```javascript
+sort(arr);
 ```
-function qSort (arr) {
-	if (arr.length == 0) {
-		return []
-	}
-	var left = []
-	var right = []
-	var pivot = arr[0]
-	for (var i = 1; i < arr.length; i++) {
-		if (arr[i] < pivot) {
-			left.push(arr[i])
-		} else {
-			right.push(arr[i])
-		}
-	}
-	return qSort(left).concat(pivot, qSort(right))
-}
-
-var arr=[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
-console.log(qSort(arr));
+那么，首先我们先实现一个交换函数，用于数组成员之间的交换
+```javascript
+    // 原地交换函数，而非用临时数组
+    function swap(array, a, b) {
+        [array[a], array[b]] = [array[b], array[a]];
+    } 
 ```
+快速排序是分治策略的经典实现，分治的策略如下：
+* 分解(Divide)步骤：将问题划分未一些子问题，子问题的形式与原问题一样，只是规模更小
+* 解决(Conquer)步骤：递归地求解出子问题。如果子问题的规模足够小，则停止递归，直接求解
+* 合并(Combine)步骤：将子问题的解组合成原问题的解
 
-快速排序的最坏运行情况是O(n²)，比如说顺序数列的快排。但它的平摊期望时间是O(n log n) ，且O(n log n)记号中隐含的常数因子很小，比复杂度稳定等于O(n log n)的归并排序要小很多。所以，对绝大多数顺序性较弱的随机数列而言，快速排序总是优于归并排序
+快速排序函数,我们需要将排序问题划分为一些子问题进行排序，然后通过递归求解，我们的终止条件就是,当 `array.length > 1` 不再生效时返回数组。
+
+```javascript
+function quick(array, left, right) {
+    let index;
+    if (array.length > 1) {
+      index = partition(array, left, right);
+      if (left < index - 1) {
+        quick(array, left, index - 1);
+      }
+      if (index < right) {
+        quick(array, index, right);
+      }
+    }
+    return array;
+  }
+function quickSort(array) {
+    return quick(array, 0, array.length - 1);
+  };
+```
+接下来实现划分操作
+```javascript
+// 划分操作函数
+  function partition(array, left, right) {
+    // 用index取中间值而非splice
+    const pivot = array[Math.floor((right + left) / 2)];
+    let i = left;
+    let j = right;
+
+    while (i <= j) {
+      while (compare(array[i], pivot) === -1) {
+        i++;
+      }
+      while (compare(array[j], pivot) === 1) {
+        j--;
+      }
+      if (i <= j) {
+        swap(array, i, j);
+        i++;
+        j--;
+      }
+    }
+    return i;
+  }
+  
+  // 比较函数
+  function compare(a, b) {
+    if (a === b) {
+      return 0;
+    }
+    return a < b ? -1 : 1;
+  }
+```
 
 ### 二分法查找算法（查找位置）
 
@@ -256,7 +305,7 @@ console.log(qSort(arr));
 * 如果目标元素大于或者小于中间元素，则在数组大于或小于中间元素的那一半区域查找，然后重复第一步的操作。
 * 如果某一步数组为空，则表示找不到目标元素。
 
-```
+```javascript
 function binSearch (arr, data) {
 	var low = 0;
 	var high = arr.length - 1
